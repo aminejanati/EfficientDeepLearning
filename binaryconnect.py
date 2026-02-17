@@ -58,11 +58,11 @@ class BC():
         ### To be completed
 
         ### (1) Save the current full precision parameters using the save_params method
-
-        
-        1
+        self.save_params()
         ### (2) Binarize the weights in the model, by iterating through the list of target modules and overwrite the values with their binary version
-        
+        for index in range(self.num_of_params):
+            self.target_modules[index].data = self.target_modules[index].data.sign()
+
     def restore(self):
 
         ### restore the copy from self.saved_params into the model 
@@ -75,8 +75,8 @@ class BC():
         ## To be completed 
         ## Clip all parameters to the range [-1,1] using Hard Tanh 
         ## you can use the nn.Hardtanh function
-
-        1
+        for index in range(self.num_of_params):
+            self.target_modules[index].data.copy_(nn.Hardtanh()(self.target_modules[index].data))
 
 
     def forward(self,x):
