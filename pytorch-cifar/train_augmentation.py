@@ -26,6 +26,8 @@ parser.add_argument('--mixup', action='store_true',
                     help='enable MixUp data augmentation')
 parser.add_argument('--mixup-alpha', default=1.0, type=float,
                     help='MixUp beta distribution alpha')
+parser.add_argument('--save-name', default=None, type=str,
+                    help='custom filename for the final best model (without extension)')
 args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -37,6 +39,7 @@ train_accs = []
 test_losses = []
 test_accs = []
 best_epoch = 0
+best_state = None
 
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 writer = SummaryWriter(f'runs/cifar10_resnet18_augmix_{timestamp}')
@@ -145,7 +148,7 @@ def train(epoch):
 
 
 def test(epoch):
-    global best_acc, best_epoch
+    global best_acc, best_epoch, best_state
     net.eval()
     test_loss = 0
     correct = 0
@@ -178,9 +181,7 @@ def test(epoch):
             'acc': acc,
             'epoch': epoch,
         }
-        if not os.path.isdir('checkpoint'):
-            os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/ckpt.pth')
+        best_state = state
         best_acc = acc
         best_epoch = epoch
         writer.add_scalar('Best/accuracy', best_acc, epoch)
@@ -198,6 +199,32 @@ for epoch in range(start_epoch, start_epoch + args.epochs):
     test_accs.append(test_acc)
 
     scheduler.step()
+
+if best_state is None:
+    best_state = {
+        'net': net.state_dict(),
+        'acc': best_acc,
+        'epoch': start_epoch + args.epochs - 1,
+    }
+
+weights_dir = './Models Weights'
+if not os.path.isdir(weights_dir):
+    os.mkdir(weights_dir)
+
+if not os.path.isdir('checkpoint'):
+    os.mkdir('checkpoint')
+
+save_stem = args.save_name if args.save_name else f'resnet18_augmix_best_{timestamp}'
+save_path = os.path.join(weights_dir, f'{save_stem}.pth')
+torch.save(best_state, save_path)
+torch.save(best_state, './checkpoint/ckpt.pth')
+
+plots_root_dir = './Model Plots'
+if not os.path.isdir(plots_root_dir):
+    os.mkdir(plots_root_dir)
+
+model_plot_dir = os.path.join(plots_root_dir, save_stem)
+os.makedirs(model_plot_dir, exist_ok=True)
 
 print('\n==> Plotting training history...')
 epochs_range = range(start_epoch, start_epoch + args.epochs)
@@ -227,10 +254,11 @@ ax2.legend(loc='upper right')
 ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('./checkpoint/training_history_augmix.png', dpi=150, bbox_inches='tight')
-print('Training history plot saved to ./checkpoint/training_history_augmix.png')
+plot_path = os.path.join(model_plot_dir, 'training_history_augmix.png')
+plt.savefig(plot_path, dpi=150, bbox_inches='tight')
+print(f'Training history plot saved to {plot_path}')
 print(f'Best model achieved {best_acc:.2f}% accuracy at epoch {best_epoch}')
-print('Best model saved at ./checkpoint/ckpt.pth')
+print(f'Best model saved at {save_path}')
 plt.show()
 
 writer.close()
