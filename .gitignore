@@ -9,8 +9,6 @@ checkpoint/
 
 ### Pytorch models
 *.pt
-*.pth
-
 ### Latex
 *.snm
 *.gz
