@@ -262,6 +262,7 @@ def train_with_augmentation(
     model_plot_dir = os.path.join(plots_root_dir, save_stem)
     os.makedirs(model_plot_dir, exist_ok=True)
 
+    """"
     _save_plots(
         train_accs,
         test_accs,
@@ -273,7 +274,7 @@ def train_with_augmentation(
         epochs,
         model_plot_dir,
     )
-
+    """
     print(f'Best model achieved {best_acc:.2f}% accuracy at epoch {best_epoch}')
     print(f'Best model saved at {save_path}')
     writer.close()
@@ -284,6 +285,10 @@ def train_with_augmentation(
         'best_epoch': best_epoch,
         'save_path': save_path,
         'model': net,
+        'train_accs': train_accs,
+        'test_accs': test_accs,
+        'train_losses': train_losses,
+        'test_losses': test_losses,
     }
 
 
