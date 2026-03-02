@@ -10,7 +10,6 @@ import torchvision.transforms as transforms
 import os
 import argparse
 import matplotlib.pyplot as plt
-from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
 from models import *
@@ -30,7 +29,6 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
-#TensorBoard data
 # Lists to track metrics
 train_losses = []
 train_accs = []
@@ -38,12 +36,7 @@ test_losses = []
 test_accs = []
 best_epoch = 0
 best_state = None
-
-# TensorBoard writer
 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-writer = SummaryWriter(f'runs/cifar10_resnet18_{timestamp}')
-print(f'==> TensorBoard logging to: runs/cifar10_resnet18_{timestamp}')
-print('==> Start TensorBoard with: tensorboard --logdir=runs')
 
 # Data
 print('==> Preparing data..')
@@ -137,10 +130,6 @@ def train(epoch):
     epoch_loss = train_loss/len(trainloader)
     epoch_acc = 100.*correct/total
     
-    # Log to TensorBoard
-    writer.add_scalar('Loss/train', epoch_loss, epoch)
-    writer.add_scalar('Accuracy/train', epoch_acc, epoch)
-    
     return epoch_loss, epoch_acc
 
 
@@ -168,9 +157,6 @@ def test(epoch):
     acc = 100.*correct/total
     epoch_loss = test_loss/len(testloader)
     
-    # Log to TensorBoard
-    writer.add_scalar('Loss/test', epoch_loss, epoch)
-    writer.add_scalar('Accuracy/test', acc, epoch)
     if acc > best_acc:
         print('Saving..')
         state = {
@@ -181,9 +167,6 @@ def test(epoch):
         best_state = state
         best_acc = acc
         best_epoch = epoch
-        
-        # Log best accuracy to TensorBoard
-        writer.add_scalar('Best/accuracy', best_acc, epoch)
     
     return epoch_loss, acc
 
@@ -207,9 +190,9 @@ if best_state is None:
         'epoch': start_epoch + args.epochs - 1,
     }
 
-weights_dir = './Models Weights'
+weights_dir = './Models Weights/baseline'
 if not os.path.isdir(weights_dir):
-    os.mkdir(weights_dir)
+    os.makedirs(weights_dir, exist_ok=True)
 
 if not os.path.isdir('checkpoint'):
     os.mkdir('checkpoint')
@@ -219,9 +202,9 @@ save_path = os.path.join(weights_dir, f'{save_stem}.pth')
 torch.save(best_state, save_path)
 torch.save(best_state, './checkpoint/ckpt.pth')
 
-plots_root_dir = './Model Plots'
+plots_root_dir = './Model Plots/baseline'
 if not os.path.isdir(plots_root_dir):
-    os.mkdir(plots_root_dir)
+    os.makedirs(plots_root_dir, exist_ok=True)
 
 model_plot_dir = os.path.join(plots_root_dir, save_stem)
 os.makedirs(model_plot_dir, exist_ok=True)
@@ -263,7 +246,3 @@ print(f'Training history plot saved to {plot_path}')
 print(f'Best model achieved {best_acc:.2f}% accuracy at epoch {best_epoch}')
 print(f'Best model saved at {save_path}')
 plt.show()
-
-# Close TensorBoard writer
-writer.close()
-print('\n==> TensorBoard logs saved. View with: tensorboard --logdir=runs')

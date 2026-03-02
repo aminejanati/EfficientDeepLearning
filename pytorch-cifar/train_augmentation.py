@@ -10,7 +10,6 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-from torch.utils.tensorboard import SummaryWriter
 
 from models import ResNet18
 from utils import progress_bar
@@ -100,6 +99,8 @@ def train_with_augmentation(
     mixup_alpha=1.0,
     save_name=None,
     model=None,
+    weights_subdir='baseline',
+    plots_subdir='baseline',
 ):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     best_acc = 0
@@ -113,9 +114,6 @@ def train_with_augmentation(
     best_state = None
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    writer = SummaryWriter(f'runs/cifar10_resnet18_augmix_{timestamp}')
-    print(f'==> TensorBoard logging to: runs/cifar10_resnet18_augmix_{timestamp}')
-    print('==> Start TensorBoard with: tensorboard --logdir=runs')
 
     trainloader, testloader = _prepare_data()
 
@@ -178,9 +176,6 @@ def train_with_augmentation(
         epoch_loss = train_loss/len(trainloader)
         epoch_acc = 100.*correct/total
 
-        writer.add_scalar('Loss/train', epoch_loss, epoch)
-        writer.add_scalar('Accuracy/train', epoch_acc, epoch)
-
         return epoch_loss, epoch_acc
 
     def test_one_epoch(epoch):
@@ -208,9 +203,6 @@ def train_with_augmentation(
         acc = 100.*correct/total
         epoch_loss = test_loss/len(testloader)
 
-        writer.add_scalar('Loss/test', epoch_loss, epoch)
-        writer.add_scalar('Accuracy/test', acc, epoch)
-
         if acc > best_acc:
             print('Saving..')
             state = {
@@ -221,7 +213,6 @@ def train_with_augmentation(
             best_state = state
             best_acc = acc
             best_epoch = epoch
-            writer.add_scalar('Best/accuracy', best_acc, epoch)
 
         return epoch_loss, acc
 
@@ -243,9 +234,9 @@ def train_with_augmentation(
             'epoch': start_epoch + epochs - 1,
         }
 
-    weights_dir = './Models Weights'
+    weights_dir = os.path.join('./Models Weights', weights_subdir)
     if not os.path.isdir(weights_dir):
-        os.mkdir(weights_dir)
+        os.makedirs(weights_dir, exist_ok=True)
 
     if not os.path.isdir('checkpoint'):
         os.mkdir('checkpoint')
@@ -255,9 +246,9 @@ def train_with_augmentation(
     torch.save(best_state, save_path)
     torch.save(best_state, './checkpoint/ckpt.pth')
 
-    plots_root_dir = './Model Plots'
+    plots_root_dir = os.path.join('./Model Plots', plots_subdir)
     if not os.path.isdir(plots_root_dir):
-        os.mkdir(plots_root_dir)
+        os.makedirs(plots_root_dir, exist_ok=True)
 
     model_plot_dir = os.path.join(plots_root_dir, save_stem)
     os.makedirs(model_plot_dir, exist_ok=True)
@@ -277,8 +268,6 @@ def train_with_augmentation(
     """
     print(f'Best model achieved {best_acc:.2f}% accuracy at epoch {best_epoch}')
     print(f'Best model saved at {save_path}')
-    writer.close()
-    print('\n==> TensorBoard logs saved. View with: tensorboard --logdir=runs')
 
     return {
         'best_acc': best_acc,
