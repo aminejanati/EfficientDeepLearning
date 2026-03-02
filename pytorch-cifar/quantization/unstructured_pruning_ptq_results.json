@@ -1,0 +1,154 @@
+{
+  "weights_dir": "/homes/m24janat/efficient-deep-learning/pytorch-cifar/Models Weights/unstructured_pruning",
+  "output_dir": "/homes/m24janat/efficient-deep-learning/pytorch-cifar/Models Weights/quantization/unstructured_pruning_ptq",
+  "results_count": 16,
+  "backend": "fbgemm",
+  "calib_batches": 100,
+  "no_finetuning": true,
+  "results": [
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.1structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.1structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.251583,
+      "fp32_test_acc": 95.45,
+      "int8_test_loss": 0.251975,
+      "int8_test_acc": 95.4,
+      "acc_drop": 0.05
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.3structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.3structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.338792,
+      "fp32_test_acc": 93.47,
+      "int8_test_loss": 0.339134,
+      "int8_test_acc": 93.64,
+      "acc_drop": -0.17
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.5structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.5structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.376501,
+      "fp32_test_acc": 93.25,
+      "int8_test_loss": 0.374615,
+      "int8_test_acc": 93.22,
+      "acc_drop": 0.03
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.7structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.7structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.388111,
+      "fp32_test_acc": 91.68,
+      "int8_test_loss": 0.388511,
+      "int8_test_acc": 91.68,
+      "acc_drop": 0.0
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.1structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.1structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.290777,
+      "fp32_test_acc": 95.18,
+      "int8_test_loss": 0.290982,
+      "int8_test_acc": 95.27,
+      "acc_drop": -0.09
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.3structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.3structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.361631,
+      "fp32_test_acc": 93.86,
+      "int8_test_loss": 0.360988,
+      "int8_test_acc": 93.87,
+      "acc_drop": -0.01
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.5structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.5structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.413163,
+      "fp32_test_acc": 93.29,
+      "int8_test_loss": 0.415582,
+      "int8_test_acc": 93.24,
+      "acc_drop": 0.05
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.7structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.7structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.404281,
+      "fp32_test_acc": 91.51,
+      "int8_test_loss": 0.405151,
+      "int8_test_acc": 91.46,
+      "acc_drop": 0.05
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.1structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.1structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.29548,
+      "fp32_test_acc": 95.15,
+      "int8_test_loss": 0.295387,
+      "int8_test_acc": 95.04,
+      "acc_drop": 0.11
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.3structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.3structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.347407,
+      "fp32_test_acc": 93.87,
+      "int8_test_loss": 0.348416,
+      "int8_test_acc": 94.01,
+      "acc_drop": -0.14
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.5structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.5structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.318833,
+      "fp32_test_acc": 93.58,
+      "int8_test_loss": 0.318098,
+      "int8_test_acc": 93.6,
+      "acc_drop": -0.02
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.7structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.7structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.441766,
+      "fp32_test_acc": 91.53,
+      "int8_test_loss": 0.442751,
+      "int8_test_acc": 91.53,
+      "acc_drop": 0.0
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.1structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.1structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.296844,
+      "fp32_test_acc": 95.22,
+      "int8_test_loss": 0.297308,
+      "int8_test_acc": 95.17,
+      "acc_drop": 0.05
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.3structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.3structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.344481,
+      "fp32_test_acc": 93.7,
+      "int8_test_loss": 0.344987,
+      "int8_test_acc": 93.7,
+      "acc_drop": 0.0
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.5structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.5structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.371635,
+      "fp32_test_acc": 93.27,
+      "int8_test_loss": 0.372094,
+      "int8_test_acc": 93.33,
+      "acc_drop": -0.06
+    },
+    {
+      "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.7structured_augmix_30ep.pth",
+      "int8_checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.7structured_augmix_30ep_int8_ptq_nofinetune.pth",
+      "fp32_test_loss": 0.408253,
+      "fp32_test_acc": 91.61,
+      "int8_test_loss": 0.4082,
+      "int8_test_acc": 91.69,
+      "acc_drop": -0.08
+    }
+  ]
+}

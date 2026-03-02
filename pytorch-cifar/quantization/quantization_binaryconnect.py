@@ -53,7 +53,7 @@ if device == 'cuda':
     cudnn.benchmark = True
 
 # Load pretrained weights
-checkpoint = torch.load(str(PROJECT_ROOT / 'Models Weights' / 'baseline' / 'Resnet18_V0.pth'), map_location=device)
+checkpoint = torch.load(str(PROJECT_ROOT / 'Models Weights' / 'unstructured_pruning' / 'Resnet18_unstructured_pruned_10_basemodel_0.1structured_augmix_30ep.pth'), map_location=device)
 state_dict = checkpoint['net']
 # Remove 'module.' if using DataParallel
 new_state_dict = normalize_state_dict_for_model(state_dict, model)
