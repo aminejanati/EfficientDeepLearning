@@ -1,0 +1,98 @@
+[
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.1structured_augmix_30ep.pth",
+    "fp32_test_acc": 95.45,
+    "int4_test_acc": 94.49,
+    "acc_drop": 0.96
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.3structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.47,
+    "int4_test_acc": 92.78,
+    "acc_drop": 0.69
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.5structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.25,
+    "int4_test_acc": 92.55,
+    "acc_drop": 0.7
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_10_basemodel_0.7structured_augmix_30ep.pth",
+    "fp32_test_acc": 91.68,
+    "int4_test_acc": 90.17,
+    "acc_drop": 1.51
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.1structured_augmix_30ep.pth",
+    "fp32_test_acc": 95.18,
+    "int4_test_acc": 94.44,
+    "acc_drop": 0.74
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.3structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.86,
+    "int4_test_acc": 92.88,
+    "acc_drop": 0.98
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.5structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.29,
+    "int4_test_acc": 92.37,
+    "acc_drop": 0.92
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_30_basemodel_0.7structured_augmix_30ep.pth",
+    "fp32_test_acc": 91.51,
+    "int4_test_acc": 90.06,
+    "acc_drop": 1.45
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.1structured_augmix_30ep.pth",
+    "fp32_test_acc": 95.15,
+    "int4_test_acc": 94.21,
+    "acc_drop": 0.94
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.3structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.87,
+    "int4_test_acc": 93.1,
+    "acc_drop": 0.77
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.5structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.58,
+    "int4_test_acc": 92.44,
+    "acc_drop": 1.14
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_50_basemodel_0.7structured_augmix_30ep.pth",
+    "fp32_test_acc": 91.53,
+    "int4_test_acc": 90.07,
+    "acc_drop": 1.46
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.1structured_augmix_30ep.pth",
+    "fp32_test_acc": 95.22,
+    "int4_test_acc": 94.33,
+    "acc_drop": 0.89
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.3structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.7,
+    "int4_test_acc": 92.76,
+    "acc_drop": 0.94
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.5structured_augmix_30ep.pth",
+    "fp32_test_acc": 93.27,
+    "int4_test_acc": 92.27,
+    "acc_drop": 1.0
+  },
+  {
+    "checkpoint": "Resnet18_unstructured_pruned_70_basemodel_0.7structured_augmix_30ep.pth",
+    "fp32_test_acc": 91.61,
+    "int4_test_acc": 90.1,
+    "acc_drop": 1.51
+  }
+]
