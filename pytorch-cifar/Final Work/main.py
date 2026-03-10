@@ -9,9 +9,16 @@ import torchvision
 import torchvision.transforms as transforms
 
 import os
+import sys
 from datetime import datetime
+from pathlib import Path
 import matplotlib.pyplot as plt
-from models import *
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from models import ResNet18, ResNet18_GroupedG2, ResNet18_GroupedG4, ResNet18_GroupedG8, ResNet18_Depthwise
 from utils import progress_bar
 
 
@@ -21,7 +28,7 @@ from utils import progress_bar
 LEARNING_RATE = 0.1
 RESUME_FROM_CHECKPOINT = False
 EPOCHS = 200
-SAVE_NAME = "resnet18_g2"
+SAVE_NAME = "resnet18_g8"
 RUN_NAME = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Distillation configuration
@@ -38,12 +45,16 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
-weights_dir = 'Models Weights/step1'
-if not os.path.isdir(weights_dir):
-    os.makedirs(weights_dir, exist_ok=True)
+data_dir = PROJECT_ROOT / 'data'
+teacher_ckpt_path = Path(TEACHER_CKPT_PATH)
+if not teacher_ckpt_path.is_absolute():
+    teacher_ckpt_path = PROJECT_ROOT / teacher_ckpt_path
+
+weights_dir = PROJECT_ROOT / 'Final Weights' / 'step1'
+weights_dir.mkdir(parents=True, exist_ok=True)
 
 save_stem = SAVE_NAME if SAVE_NAME else f'{RUN_NAME}'
-save_path = os.path.join(weights_dir, f'{save_stem}.pth')
+save_path = str(weights_dir / f'{save_stem}.pth')
 
 # Lists to track metrics
 train_losses = []
@@ -70,12 +81,12 @@ transform_test = transforms.Compose([
 ])
 
 trainset = torchvision.datasets.CIFAR10(
-    root='./data', train=True, download=True, transform=transform_train)
+    root=str(data_dir), train=True, download=True, transform=transform_train)
 trainloader = torch.utils.data.DataLoader(
     trainset, batch_size=TRAIN_BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 
 testset = torchvision.datasets.CIFAR10(
-    root='./data', train=False, download=True, transform=transform_test)
+    root=str(data_dir), train=False, download=True, transform=transform_test)
 testloader = torch.utils.data.DataLoader(
     testset, batch_size=TEST_BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 
@@ -84,32 +95,48 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer',
 
 
 def build_student_model():
-    return ResNet18_GroupedG2()
+    return ResNet18_GroupedG8()
+            # net = ResNet18_GroupedG2()
+            # net = ResNet18_GroupedG4()
+            # net = ResNet18_Depthwise()
 
 
 def build_teacher_model():
     return ResNet18()
 
 
-def load_model_checkpoint(model, ckpt_path, current_device):
+def _adapt_state_dict_for_model(model, state_dict):
+    model_keys = model.state_dict().keys()
+    has_module_in_model = any(k.startswith('module.') for k in model_keys)
+    has_module_in_ckpt = any(k.startswith('module.') for k in state_dict.keys())
+
+    if has_module_in_ckpt and not has_module_in_model:
+        return {
+            (k[len('module.'):] if k.startswith('module.') else k): v
+            for k, v in state_dict.items()
+        }
+    if has_module_in_model and not has_module_in_ckpt:
+        return {f'module.{k}': v for k, v in state_dict.items()}
+    return state_dict
+
+
+def load_model_checkpoint(model, ckpt_path, current_device, strict=True):
     checkpoint = torch.load(ckpt_path, map_location=current_device)
     state_dict = checkpoint['net'] if isinstance(checkpoint, dict) and 'net' in checkpoint else checkpoint
-    model.load_state_dict(state_dict)
+    state_dict = _adapt_state_dict_for_model(model, state_dict)
+    model.load_state_dict(state_dict, strict=strict)
     return model
 
 # Model
 print('==> Building model..')
 net = build_student_model()
-# net = ResNet18_GroupedG4()
-# net = ResNet18_GroupedG8()
-# net = ResNet18_Depthwise()
 
 teacher_net = None
 if USE_DISTILLATION:
     print('==> Building teacher model for distillation..')
-    assert os.path.isfile(TEACHER_CKPT_PATH), f'Error: teacher checkpoint not found at {TEACHER_CKPT_PATH}'
+    assert teacher_ckpt_path.is_file(), f'Error: teacher checkpoint not found at {teacher_ckpt_path}'
     teacher_net = build_teacher_model().to(device)
-    teacher_net = load_model_checkpoint(teacher_net, TEACHER_CKPT_PATH, device)
+    teacher_net = load_model_checkpoint(teacher_net, str(teacher_ckpt_path), device)
     teacher_net.eval()
     for param in teacher_net.parameters():
         param.requires_grad = False
@@ -127,7 +154,8 @@ if RESUME_FROM_CHECKPOINT:
     print('==> Resuming from checkpoint..')
     assert os.path.isfile(save_path), f'Error: checkpoint not found at {save_path}'
     checkpoint = torch.load(save_path, map_location=device)
-    net.load_state_dict(checkpoint['net'])
+    resume_state_dict = _adapt_state_dict_for_model(net, checkpoint['net'])
+    net.load_state_dict(resume_state_dict)
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch'] + 1
 
