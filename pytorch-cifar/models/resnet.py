@@ -39,6 +39,113 @@ class BasicBlock(nn.Module):
         return out
 
 
+class GroupedBasicBlock(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1, groups=2):
+        super(GroupedBasicBlock, self).__init__()
+        self.conv1 = nn.Conv2d(
+            in_planes,
+            planes,
+            kernel_size=3,
+            stride=stride,
+            padding=1,
+            groups=groups,
+            bias=False,
+        )
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = nn.Conv2d(
+            planes,
+            planes,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            groups=groups,
+            bias=False,
+        )
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_planes, self.expansion*planes,
+                          kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion*planes)
+            )
+
+    def forward(self, x):
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)
+        out = F.relu(out)
+        return out
+
+
+class GroupedBasicBlockG2(GroupedBasicBlock):
+    def __init__(self, in_planes, planes, stride=1):
+        super(GroupedBasicBlockG2, self).__init__(
+            in_planes, planes, stride=stride, groups=2)
+
+
+class GroupedBasicBlockG4(GroupedBasicBlock):
+    def __init__(self, in_planes, planes, stride=1):
+        super(GroupedBasicBlockG4, self).__init__(
+            in_planes, planes, stride=stride, groups=4)
+
+
+class GroupedBasicBlockG8(GroupedBasicBlock):
+    def __init__(self, in_planes, planes, stride=1):
+        super(GroupedBasicBlockG8, self).__init__(
+            in_planes, planes, stride=stride, groups=8)
+
+
+class DepthwiseSeparableBasicBlock(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, planes, stride=1):
+        super(DepthwiseSeparableBasicBlock, self).__init__()
+        self.dw1 = nn.Conv2d(
+            in_planes,
+            in_planes,
+            kernel_size=3,
+            stride=stride,
+            padding=1,
+            groups=in_planes,
+            bias=False,
+        )
+        self.pw1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(planes)
+
+        self.dw2 = nn.Conv2d(
+            planes,
+            planes,
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            groups=planes,
+            bias=False,
+        )
+        self.pw2 = nn.Conv2d(planes, planes, kernel_size=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(planes)
+
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion*planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_planes, self.expansion*planes,
+                          kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion*planes)
+            )
+
+    def forward(self, x):
+        out = self.dw1(x)
+        out = F.relu(self.bn1(self.pw1(out)))
+        out = self.dw2(out)
+        out = self.bn2(self.pw2(out))
+        out += self.shortcut(x)
+        out = F.relu(out)
+        return out
+
+
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -106,6 +213,22 @@ class ResNet(nn.Module):
 
 def ResNet18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
+
+
+def ResNet18_GroupedG2():
+    return ResNet(GroupedBasicBlockG2, [2, 2, 2, 2])
+
+
+def ResNet18_GroupedG4():
+    return ResNet(GroupedBasicBlockG4, [2, 2, 2, 2])
+
+
+def ResNet18_GroupedG8():
+    return ResNet(GroupedBasicBlockG8, [2, 2, 2, 2])
+
+
+def ResNet18_Depthwise():
+    return ResNet(DepthwiseSeparableBasicBlock, [2, 2, 2, 2])
 
 
 def ResNet34():
