@@ -28,7 +28,7 @@ from utils import progress_bar
 LEARNING_RATE = 0.1
 RESUME_FROM_CHECKPOINT = False
 EPOCHS = 200
-SAVE_NAME = "resnet18_g8"
+SAVE_NAME = "resnet18_depthwise"
 RUN_NAME = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 # Distillation configuration
@@ -95,7 +95,7 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer',
 
 
 def build_student_model():
-    return ResNet18_GroupedG8()
+    return ResNet18_Depthwise()
             # net = ResNet18_GroupedG2()
             # net = ResNet18_GroupedG4()
             # net = ResNet18_Depthwise()
